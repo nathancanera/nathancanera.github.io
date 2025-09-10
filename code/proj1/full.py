@@ -30,9 +30,7 @@ def tif(imname):
     # b = crop_image(b, top=0.0025, bottom=0.0025, left=0.015, right=0.015)
     # g = crop_image(g, top=0.0025, bottom=0.0025, left=0.015, right=0.015)
     # r = crop_image(r, top=0.0025, bottom=0.0025, left=0.015, right=0.015)
-    # align the images
-    # functions that might be useful for aligning the images include:
-    # np.roll, np.sum, sk.transform.rescale (for multiscale)
+
 
     aligned_G, shift_G = pyramid(g, b, metric=ncc, max_levels=2, window=25)
     aligned_R, shift_R = pyramid(r, b, metric=ncc, max_levels=2, window=25)
@@ -43,14 +41,12 @@ def tif(imname):
     shift_G = (shift_G[0] + fine_shift_G[0], shift_G[1] + fine_shift_G[1])
     shift_R = (shift_R[0] + fine_shift_R[0], shift_R[1] + fine_shift_R[1])
 
-    # create a color image
     im_out = np.dstack([aligned_R, aligned_G, b])
     im_out_norm = (im_out - im_out.min()) / (im_out.max() - im_out.min())
     im_out_uint8 = img_as_ubyte(im_out_norm)
-    # save the image
+
     fname = f'code/proj1/out_path/{imname}.jpg'
     skio.imsave(fname, im_out_uint8)
 
-    # display the image
     skio.imshow(im_out_uint8)
     #skio.show()

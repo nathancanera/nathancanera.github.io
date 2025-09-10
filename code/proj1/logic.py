@@ -66,9 +66,7 @@ def pyramid(match, base, max_levels=5, window=15, metric=ssd):
 
     dx, dy = shift_small[0] * 2, shift_small[1] * 2
 
-    bruh2, refined_shift = align(match, base,
-                                 window=2,
-                                 metric=metric)
+    bruh2, refined_shift = align(match, base, window=2, metric=metric)
 
     dx += refined_shift[0]
     dy += refined_shift[1]
