@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Project 1</h1>
+    <a href="./../index.html">Home</a>
+    <p>
+        In this project, we were tasked with taking 3 red, green, and blue channel images of the same scene and aligning them to create a single color image. We implemented two methods to do this: a naive approach that exhaustively searches for the best alignment by optimizinng either the Euclidean distance or the normalized cross-correlation, and a more efficient pyramid approach that uses image pyramids to perform the alignment at multiple scales. The results were saved as images and can be viewed in the respective project folders.
+    </p>
+    <br></br>
+    <h3>Naive Implementation</h3>
+    <p>
+        My naive impelemtation involved creating a function that would take in the three color channels and align them using either the Euclidean distance or the normalized cross-correlation. I chose to use the normalized cross-correlation as my metric for alignment, as it is more robust to changes in lighting and contrast. The function would then return the aligned image, which was saved as a .jpg file. The results of my naive implementation can be seen below:
+    </p>
+    <br></br>
+    <img src="./media/cathedral.jpg">
+    <img src="./media/tobolsk.jpg">
+    <img src="./media/monastery.jpg">
+    <p>
+        The alignment worked by shifting the green and red channels atop the blue channel by comparing 30x30 pixel patches of each image and lining up the most similar patches. The images tested with the naive approach had a low resolution so this brute force approach worked fine. For the tif images though, a more efficient approach was necessary. 
+    </p>
+    <br></br>
+    <h3>Image Pyramid Implementation</h3>
+    <p>
+        My pyramid implementation involved creating a function that would take in the same 3 color channels. Instead of brute forcing by searching the entire full resolution image, this function recursively shrinks the images resolution by half and aligns as it goes down, slowely refining the alignment to reduce the time complexity. The results of my pyramid implementation can be seen below:
+    </p>
+    <br></br>
+    <img src="./media/church.jpg" width="350" height="auto">
+    <img src="./media/emir.jpg" width="350" height="auto">
+    <img src="./media/harvesters.jpg" width="350" height="auto">
+    <img src="./media/icon.jpg" width="350" height="auto">
+    <img src="./media/italil.jpg" width="350" height="auto">
+    <img src="./media/lastochikino.jpg" width="350" height="auto">
+    <img src="./media/lugano.jpg" width="350" height="auto">
+    <img src="./media/melons.jpg" width="350" height="auto">
+    <img src="./media/self_portrait.jpg" width="350" height="auto">
+    <img src="./media/siren.jpg" width="350" height="auto">
+    <img src="./media/three_generations.jpg" width="350" height="auto">
+    <br></br>
+    <h5>Some extra examples</h5>
+    <img src="./media/example1.jpg" width="350" height="auto">
+    <img src="./media/example2.jpg" width="350" height="auto">
+    <img src="./media/example3.jpg" width="350" height="auto">
+    <p>
+        An issue that I ran into with the pyramid approach was that sometimes the alignment would be off by a few pixels, resulting in a blurry image. I believe this was due to the fact that the images were not perfectly aligned at the lowest resolution, and the error was compounded as the images were scaled back up. To fix this, I implemented a fine-tuning step at the end of the pyramid approach that would search a small window around the current alignment to find the best alignment. This plus some parameter tuning got me to a point of alignment that I was happy with. 
+    </p>
+</body>
+</html>
