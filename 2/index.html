@@ -25,7 +25,7 @@
     <img src="./media/tobolsk.jpg">
     <img src="./media/monastery.jpg">
     <p>
-        The alignment worked by shifting the green and red channels atop the blue channel by comparing 30x30 pixel patches of each image and lining up the most similar patches. The images tested with the naive approach had a low resolution so this brute force approach worked fine. For the tif images though, a more efficient approach was necessary. 
+        The alignment worked by shifting the green and red channels atop the blue channel by comparing 30x30 pixel patches of each image using either ncc or the l2 norm and lining up the patches that have the best scores. It's important to note that I also trim off 10% from each border of the image so we are only looking at center pixels. The images tested with the naive approach had a low resolution so this brute force approach worked fine. For the tif images though, a more efficient approach was necessary. 
     </p>
     <br></br>
     <h3>Image Pyramid Implementation</h3>
@@ -44,6 +44,10 @@
     <img src="./media/self_portrait.jpg" width="350" height="auto">
     <img src="./media/siren.jpg" width="350" height="auto">
     <img src="./media/three_generations.jpg" width="350" height="auto">
+    <img src="./media/cathedral_p.jpg" width="350" height="auto">
+    <img src="./media/tobolsk_p.jpg" width="350" height="auto">
+    <img src="./media/monastery_p.jpg" width="350" height="auto">
+    <p>
     <br></br>
     <h5>Some extra examples</h5>
     <img src="./media/example1.jpg" width="350" height="auto">
