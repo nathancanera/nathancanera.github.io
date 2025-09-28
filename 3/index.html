@@ -22,7 +22,12 @@
         In part 1 of the project I implemented convolution two ways. The first was with 4 for loops and the second was with 2 for loops and numpy's vectorized functions. Very quickly I noticed that the 2 for loop implementation was significantly faster than the 4 for loop implementation. Numpy's vectorized functions are faster than the 2 extra for loops so this made sense. When comparing to scipy.signal.convolve2d though, The difference was extremeley obvious. Scipy's implementation was orders of magnitude faster than both of my implementations. This is likely due to the fact that scipy's implementation is written in C and optimized for performance.
         One thing to note, is that my implementations pad with zeros while scipy's implementation pads with edge values. This can lead to different results when convolving with certain kernels but it shows in my examples with dark borders around the image.
     </p>
+    <h5>Implementations</h5>
+    <img src="./media/four.png", height="400", width="auto">
+    <img src="./media/two.png", height="400", width="auto">
+    <h5>Results</h5>
     <img src="./media/part1.1.png">
+    <img src="./media/part1.1.2.png">
     <br></br>
     <br></br>
 
