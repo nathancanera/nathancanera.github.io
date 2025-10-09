@@ -22,6 +22,27 @@
         For this part of the project, I had to take sets of photos. The sets of photos had to have projective transformations between them (rotating the camera). The images were later going to be stitched together to form panoramic images. 
         For part 2, we had to recover the homographies between the images. I used the provided tool to manually select points in the images that corresponded to each other. I then used these points to compute the homography matrix using the Direct Linear Transformation (DLT) algorithm.
     </p>
+    <h5>System of Equations</h5>
+    <p>
+        The goal is to find the 8 unknown values in the homography matrix H 
+    </p>   
+    <img src="./media/eq_1.png", height="100", width="auto">
+    <p>
+        A point correspondence relates a point p = (x, y) in the first image to p' = (x', y') in the second image via the equation p' = Hp. In homogeneous coordinates, this is:
+    </p>
+    <img src="./media/eq_2.png", height="100", width="auto">
+    <p>
+        After expanding and rearranging we have grouped all the unknown h terms on one side, forming the Ah = b structure.
+    </p>
+    <img src="./media/eq_3.png", height="100", width="auto">
+    <p>
+        Each point correspondence provides these two equations. For n points, we can construct a 2n x 8 matrix A and a 2n x 1 vector b. The vector of unknowns h is [h11, h12, h13, h21, h22, h23, h31, h32]. The two rows of A and b for a single point (x, y, x', y') look like this:
+    </p>
+    <img src="./media/eq_4.png", height="75", width="auto">
+    <p>
+        We stack these A_i and b_i blocks for all n points and solve the overdetermined system Ah=b using the method of least squares.
+    </p>
+    <br></br>
     <h5>Outside</h5>
     <img src="./media/A2_pano_1.1.jpg", height="400", width="auto">
     <img src="./media/A2_pano_1.3.jpg", height="400", width="auto">
