@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Project 3, Stitching Photo Mosaics!</h1>
+    <a href="./../index.html">Home</a>
+    
+    <br></br>
+
+    <h3>Part A: IMAGE WARPING and MOSAICING</h3>
+
+    <h4>Part A1 and A2: Shoot, Digitize, and Recover the Homographies of pictures!</h4>
+    <p>
+        For this part of the project, I had to take sets of photos. The sets of photos had to have projective transformations between them (rotating the camera). The images were later going to be stitched together to form panoramic images. 
+        For part 2, we had to recover the homographies between the images. I used the provided tool to manually select points in the images that corresponded to each other. I then used these points to compute the homography matrix using the Direct Linear Transformation (DLT) algorithm.
+    </p>
+    <h5>Outside</h5>
+    <img src="./media/A2_pano_1.1.jpg", height="400", width="auto">
+    <img src="./media/A2_pano_1.3.jpg", height="400", width="auto">
+    <h5>Sven</h5>
+    <img src="./media/A2_pano_7.1.jpg", height="400", width="auto">
+    <img src="./media/A2_pano_7.2.jpg", height="400", width="auto">
+    <br></br>
+    <p>Next, we match up points and derive homography matrices</p>
+    <h5>Outside</h5>
+    <img src="./media/A2_outside.png", height="400", width="auto">
+    <img src="./media/A2_H_1.png", height="100", width="auto">
+    <h5>Sven</h5>
+    <img src="./media/A2_sven.png", height="400", width="auto">
+    <img src="./media/A2_H_7.png", height="100", width="auto">
+    <br></br>
+    <br></br>
+
+    <h4>Part A3: Warp the Images</h4>
+    <p>
+        For part 3, I implemented two image warping functions: nearest neighbor interpolation and bilinear interpolation. These functions take an input image and a homography matrix and produce a warped output image. I used the method created to derive homography matrices in part 2 but on different images.
+        In terms of differences between the two methods, nearest neighbor interpolation is faster but can produce blocky artifacts, while bilinear interpolation is slower but produces smoother results. I found that bilinear interpolation generally produced better results, especially for images with fine details.
+        It might be difficult to see the differences in the warped images because the images are quite low resolution though. 
+    </p>
+    <h5>Professor</h5>
+    <img src="./media/A3_laptop.png", height="600", width="auto">
+    <h5>Window</h5>
+    <img src="./media/A3_window.png", height="600", width="auto">
+    <br></br>
+    <br></br>
+
+    <h4>Part A4: Blend the Images into a Mosaic</h4>
+    <p>
+        For part 4, I implemented a function to create a simple mosaic by warping one image onto another using the computed homography matrix. The function first computes the size of the output mosaic and then warps the second image onto the first image using bilinear interpolation. Finally, it combines the two images to create the mosaic.
+        I created mosaics for seperate sets of images than those taken in part 1. The results were visually appealing, with smooth transitions between the two images. The choice of images also played a significant role in the effectiveness of the mosaics. I found that using images with similar color tones and lighting conditions produced more seamless results.
+    </p>
+    <h5>Buddies</h5>
+    <img src="./media/A4_bestBuds.png", height="600", width="auto">
+    <br></br>
+    <h5>Desk</h5>
+    <img src="./media/A4_setup.png", height="600", width="auto">
+    <br></br>
+    <h5>My Street</h5>
+    <img src="./media/A4_myStreet.png", height="600", width="auto">
+    <br></br>
+    <h5>Sven</h5>
+    <img src="./media/A4_sven.png", height="600", width="auto">
+    <br></br>
+    <h5>Berkeley Way West</h5>
+    <img src="./media/A4_wayWest.png", height="600", width="auto">
+    <br></br>
+    <br></br>
