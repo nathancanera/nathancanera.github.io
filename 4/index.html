@@ -94,3 +94,77 @@
     <img src="./media/A4_wayWest.png", height="600", width="auto">
     <br></br>
     <br></br>
+    <br></br>
+
+    <h3>Part B: FEATURE MATCHING for AUTOSTITCHING</h3>
+
+    <h4>Part B1: Harris Corner Detection</h4>
+    <p>
+        For this part of the project, I used the provided Harris corner detection function and compared it with a from-scratch Adaptive Non-Maximal Suppression (ANMS) implementation. The Harris corner detector identifies corners in an image by computing the gradient of pixel intensities and looking for regions with high variation in multiple directions.
+        The ANMS algorithm refines the corner detection results by suppressing non-maximal corners based on their strength and spatial distribution. This helps to ensure that the detected corners are well-distributed across the image.
+    </p>
+
+    <h5>Without ANMS</h5>
+    <img src="./media/B1_raw_corners.png", height="400", width="auto">
+    <h5>With ANMS</h5>
+    <img src="./media/B1_anms_corners.png", height="400", width="auto">
+    <br></br>
+    <br></br>
+
+    <h4>Part B2: Feature Descriptor Extraction</h4>
+    <p>For this part, I implemented a feature descriptiuon extractor to extract 8x8 axis-aligned patches. My extractor does the following steps:</p>
+    <p>1. Extracts a patch_size x patch_size window around each corner.</p>
+    <p>2. Applies a Gaussian blur.</p>
+    <p>3. Subsamples the patch down to 8x8.</p>
+    <p>4. Flattens and normalizes the 8x8 patch to create a 64-element descriptor.</p>
+    <p>Here is an example</p>
+    <img src="./media/B2_feature_descriptors.png", height="400", width="auto">
+    <img src="./media/B2_feature_locations.png", height="400", width="auto">
+    <br></br>
+    <br></br>
+
+    <h4>Part B3: Feature Matching</h4>
+    <p>
+        For this part of the project, I implemented a feature matching algorithm using the ratio test. The algorithm computes the Euclidean distance between feature descriptors from two images and identifies matches based on the ratio of the distances to the nearest and second-nearest neighbors. A match is accepted if the ratio of these distances is below a specified threshold (0.4 in my case).
+    </p>
+    <p>Here's some examples</p>
+    <img src="./media/B3_feature_matches.png", height="500", width="auto">
+    <img src="./media/B3_matches_2.png", height="500", width="auto">
+    <br></br>
+    <br></br>
+
+    <h4>Part B4: RANSAC for Robust Homography</h4>
+    <p>
+        For this part of the project, I implemented the RANSAC algorithm to robustly estimate the homography matrix between two images. RANSAC iteratively selects random subsets of feature matches to compute candidate homography matrices and evaluates them based on the number of inliers (matches that fit the model within a certain threshold). The homography with the highest number of inliers is selected as the final estimate.
+        I had to do this because the ratio test still still contained some outliers that skewed things. RANSAC helped to filter these out and produce a more accurate homography estimate.
+    </p>
+    <br></br>
+    <p>Here are some examples</p>
+
+    <h5>Way West</h5>
+    <img src="./media/B4_inlier_matches_WayWest.png", height="500", width="auto">
+    <img src="./media/B4_mosaic_auto_WayWest.png", height="500", width="auto">
+    <h5>Sven</h5>
+    <img src="./media/B4_inlier_matches_sven.png", height="500", width="auto">
+    <img src="./media/B4_mosaic_auto_Sven.png", height="500", width="auto">
+    <h5>Desk</h5>
+    <img src="./media/B4_inlier_matches_Desk.png", height="500", width="auto">
+    <img src="./media/B4_mosaic_auto_Desk.png", height="500", width="auto">
+
+    <br></br>
+    <br></br>
+    <p>
+        When comparing the Ransac automatic mosaics to the manual point selection done in the last part, there are a few differences that become evident. 
+        Manual point-and-click leads to some distortions and artifacts in the mosaics that weren't obvious until we saw the Ransac results. These abnormalities
+    </p>
+
+    <h5>manual</h5>
+    <img src="./media/A4_sven_alone.png", height="500", width="auto">
+    <h5>Auto Ransac</h5>
+    <img src="./media/B4_mosaic_auto_Sven.png", height="500", width="auto">
+
+    <p>
+        You can see that the manual mosaic has a bit more extreme warping and some artifacts in the right half of the image. 
+    </p>
+
+
