@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 5 - The Power of Diffusion Models!</title>
+</head>
+<body>
+    <h1>CS180/280A Project 5: The Power of Diffusion Models!</h1>
+    <a href="./../index.html">Home</a>
+    <br><br>
+
+    <h2>Part A: Playing with Diffusion Models</h2>
+    <p>
+        In this part, I experimented with pretrained diffusion models (DeepFloyd IF) and implemented sampling, denoising, inpainting, and visual illusion generation. 
+        The goal was to understand the mechanics of diffusion, iterative denoising, and classifier-free guidance (CFG).
+        Below are my results and analyses for each section.
+    </p>
+
+    <hr>
+
+    <h3>Part 0: Text-to-Image with DeepFloyd</h3>
+    <p>
+        I began by generating embeddings for several text prompts and using the DeepFloyd IF model to produce corresponding images. 
+        I experimented with different <code>num_inference_steps</code> values and reflected on how they affected image quality.
+    </p>
+    <p><strong>My embeddings:</strong>
+    ['A photorealistic close-up of a neon-lit cybernetic owl perched on a rain-slicked Tokyo street, digital art',
+    'An impressionist oil painting of a small red spaceship landing gently in a field of sunflowers at sunset, vibrant colors',
+    'A dramatic black and white photograph of an ancient stone labyrinth covered in moss, mist rising from the center, cinematic lighting',
+    'A detailed lithograph of a magnificent waterfall cascading into a still lake, dark shadows',
+    'An oil painting of a venerable old man with a long beard and a contemplative expression',
+    'A watercolor of a large, fluffy white cloud floating over a vast blue ocean, serene',
+    'A high-quality photo of a majestic lion roaring, golden light',
+    'A detailed ink sketch of a tall lighthouse standing on a rocky cliff',
+    'A vivid abstract painting dominated by large, round blue and green shapes',
+    'a high quality photo',
+    '']</p>
+    <p><strong>Random Seed:</strong> 67</p>
+
+    <h4>20 inference steps:</h4>
+    <img src="./media/a/0_1.png" alt="Generated image for prompt 1" height="300">
+
+    <h4>40 inference steps::</h4>
+    <img src="./media/a/0_2.png" alt="Generated image for prompt 2" height="300">
+
+    <h4>80 inference steps:</h4>
+    <img src="./media/a/0_3.png" alt="Generated image for prompt 3" height="300">
+    <p><strong>Reflection:</strong> As you can see, as I increased the inference steps the overall quality of the image increases. 
+        The subject of the prompt and the background both increase in quality and detail with more consistent lines and shapes
+         <code>num_inference_steps</code> values.</p>
+
+    <hr>
+
+    <h3>1.1 Forward Process</h3>
+    <p>
+        I implemented the forward diffusion process, which progressively adds Gaussian noise to the image at specified timesteps. 
+        Below are the noisy versions of the Berkeley Campanile image.
+    </p>
+
+    <img src="./media/a/campanile.jpg" alt="Original Campanile" height="200">
+    <img src="./media/a/1_1.png" alt="Noisy Campanile t=250" height="200">
+
+    <hr>
+
+    <h3>1.2 Classical Denoising</h3>
+    <p>
+        I applied Gaussian blur to attempt to denoise the noisy Campanile images. 
+        As expected, the results were poor — classical filters cannot recover fine details lost in heavy Gaussian noise.
+    </p>
+
+    <img src="./media/a/part12.png" height="400">
+    <hr>
+
+    <h3>1.3 One-Step Denoising</h3>
+    <p>
+        Using the pretrained UNet denoiser, I performed one-step denoising for each noise level. 
+        This produced noticeably better reconstructions compared to Gaussian blur, though still imperfect at higher noise levels.
+    </p>
+
+    <img src="./media/a/campanile.jpg" alt="Original Campanile" height="200">
+    <br>
+    <img src="./media/a/part13.png" height="600">
+    <hr>
+
+    <h3>1.4 Iterative Denoising</h3>
+    <p>
+        I implemented iterative denoising using a strided timestep schedule. 
+        The image gradually becomes clearer as the diffusion process progresses. 
+        This approach outperformed one-step denoising and classical filtering.
+    </p>
+
+    <img src="./media/a/part1_4_iterative_denoising.png" height="300">
+    <img src="./media/a/part1_4_iterative_steps.png" height="300">
+    
+
+    <hr>
+
+    <h3>1.5 Diffusion Model Sampling</h3>
+    <p>
+        I generated random samples from pure noise using my iterative denoising loop. 
+        The prompt used was "a high quality photo". These early results show recognizable but imperfect natural images.
+    </p>
+
+    <img src="./media/a/part1_5_sampling.png" height="300">
+    
+
+    <hr>
+
+    <h3>1.6 Classifier-Free Guidance (CFG)</h3>
+    <p>
+        Implemented CFG to enhance image fidelity by combining conditional and unconditional denoising predictions. 
+        This significantly improved realism and prompt adherence at the cost of diversity.
+    </p>
+
+    <img src="./media/a/part1_6_cfg_sampling.png" height="300">
+
+    <hr>
+
+    <h3>1.7 Image-to-Image Translation (SDEdit)</h3>
+    <p>
+        I added small amounts of noise to the Campanile image and iteratively denoised with CFG.
+        Lower noise levels preserved structure, while higher noise levels created more dramatic “edits.”
+    </p>
+
+    <img src="./media/a/1_7.png" height="200">
+
+    <hr>
+
+    <h3>1.7.1 Editing Hand-Drawn and Web Images</h3>
+    <p>
+        I tested SDEdit on both web images and two hand-drawn sketches. 
+        As noise increased, the model “realized” my drawings into photorealistic interpretations.
+    </p>
+
+    <h4>Web Image Example</h4>
+    <img src="./media/a/1_7_1_1.jpg" height="200">
+    <img src="./media/a/1_7_1_2.png" height="200">
+
+    <h4>Hand-Drawn Image 1</h4>
+    <img src="./media/a/car.png" height="200">
+    <img src="./media/a/1_7_1_3.png" height="200">
+
+    <h4>Hand-Drawn Image 2</h4>
+    <img src="./media/a/fish.png" height="200">
+    <img src="./media/a/1_7_1_4.png" alt="Drawing 2 i_start=20" height="200">
+
+    <hr>
+
+    <h3>1.7.2 Inpainting</h3>
+    <p>
+        Implemented inpainting by replacing masked pixels with diffusion-based denoised samples while preserving the unmasked regions. 
+        This enabled realistic hole-filling and object replacement.
+    </p>
+
+    <img src="./media/a/1_7_2_.png" height="200">
+    <img src="./media/a/part1_7_2.png" height="200">
+    
+
+    <h4>Additional Example</h4>
+    <img src="./media/a/1_7_2_9.png" alt="Inpainting Example 1" height="200">
+    <img src="./media/a/part1_7_2_2.png" alt="Inpainting Example 2" height="200">
+
+    <hr>
+
+    <h3>1.7.3 Text-Conditional Image Translation</h3>
+    <p>
+        I guided SDEdit with custom text prompts to modify images semantically. 
+        For example, I turned the campanile into an owl, a car into a ufo, and fish into a cloud
+    </p>
+
+    <img src="./media/a/1_7_3_1.png" height="200">
+    <br>
+    <img src="./media/a/1_7_3_2.png" height="400">
+
+    <hr>
+
+    <h3>1.8 Visual Anagrams</h3>
+    <p>
+        Created visual illusions where one image transforms into another when flipped upside down.
+        This required averaging denoiser outputs conditioned on two different prompts.
+    </p>
+    <p><strong>A waterful upright and a light tower flipped</strong></p>
+    <img src="./media/a/part1_8_1.png" height="500">
+    <br>
+    <p><strong>A UFO upright and an owl flipped both behind flowers</strong></p>
+    <img src="./media/a/part1_8_2.png" height="500">
+
+
+    <hr>
+
+    <h3>1.9 Hybrid Images</h3>
+    <p>
+        Implemented factorized diffusion to blend low frequencies from one prompt with high frequencies from another. 
+        These hybrid images reveal different content depending on viewing distance or frequency domain.
+    </p>
+    <br>
+    <p><strong>Lighthouses up close and lions from far away</strong></p>
+    <img src="./media/a/part1_9_1.png" height="300">
+    <p><strong>UFO up close and an owl from far away</strong></p>
+    <img src="./media/a/part1_9_2.png" height="300">
+
+    <hr>
+
+    <h3>Reflection</h3>
+    <p>
+        During part A of this project, I learned how diffusion models iteratively refine noisy images, 
+        how classifier-free guidance improves realism, and how denoising can be repurposed for creative tasks like inpainting and hybrid imagery. 
+        Implementing each step gave me an intuitive grasp of diffusion as both a generative and reconstructive process.
+    </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <br><br><br>
+    <hr>
+    <h2>Part B: Flow Matching from Scratch!</h2>
+    <p>
+        In this part of the project, I trained several UNet architectures on the MNIST dataset to perform flow matching.
+        I first built a simple one-step denoiser, then extended it with time conditioning and finally class conditioning.
+        The goal was to understand the flow matching framework and how conditioning improves generative quality.
+    </p>
+
+    <hr>
+
+    <h3>1.1 Implementing the UNet</h3>
+    <p>
+        I implemented a UNet with downsampling and upsampling blocks, skip connections, and convolutional layers
+        following the architecture diagram provided. The network was designed to take a noisy MNIST image and output
+        its denoised version. Below is the schematic architecture I used.
+    </p>
+
+    <img src="./media/b/1_1.png" alt="UNet architecture diagram" height="350">
+
+    <hr>
+
+    <h3>1.2 Visualizing the Noising Process</h3>
+    <p>
+        Before training, I visualized the noising process for several values of the noise parameter <em>σ</em>.
+        As expected, higher <em>σ</em> values produced progressively noisier digits.
+    </p>
+
+    <img src="./media/b/1_2.png" height="350">
+    
+
+    <hr>
+
+    <h3>1.2.1 Training the Single-Step Denoiser</h3>
+    <p>
+        I trained the UNet on the MNIST training set for 5 epochs with <code>Adam</code> optimizer (lr=1e-4).
+        The training objective minimized the L2 reconstruction loss between clean and denoised images.
+        The model gradually learned to recover the underlying digit structure from noisy inputs.
+    </p>
+
+    <img src="./media/b/1_2_1_3.png" alt="Training loss curve single-step denoiser" height="300">
+
+    <h4>Test Set Results</h4>
+    <p>Results after 1 epoch:</p>
+    <img src="./media/b/1_2_1_1.png" alt="Denoised results epoch 1" height="200">
+    <p>Results after 5 epochs:</p>
+    <img src="./media/b/1_2_1_2.png" alt="Denoised results epoch 5" height="200">
+
+    <hr>
+
+    <h3>1.2.2 Out-of-Distribution Testing</h3>
+
+    
+    <img src="./media/b/1_2_2.png" alt="OOD noise level low" height="400">
+    <p>
+        I tested the denoiser on unseen noise levels to examine its generalization ability. 
+        As noise deviated from the training distribution, reconstruction quality degraded, especially at extreme noise values.
+    </p>
+    <hr>
+
+    <h3>1.2.3 Denoising Pure Noise</h3>
+    <p>
+        After several epochs, outputs resemble blurry averages of MNIST digits.
+        Because the model minimizes MSE over all training digits, it learns the
+        pixel-wise mean of the dataset — roughly the centroid of all digits —
+        rather than distinct numbers. This is expected behavior for MSE loss.
+    </p>
+
+    <img src="./media/b/1_2_3_3.png" alt="Training loss curve pure noise" height="300">
+    <p>Results after 1 epoch:</p>
+    <img src="./media/b/1_2_3_1.png" alt="Pure noise denoised epoch 1" height="200">
+    <p>Results after 5 epochs:</p>
+    <img src="./media/b/1_2_3_2.png" alt="Pure noise denoised epoch 5" height="200">
+
+    <hr>
+
+    <h2>Part 2: Training a Flow Matching Model</h2>
+    <p>
+        After exploring simple denoising, I trained a time-conditioned UNet to predict the flow between noisy and clean samples.
+        Flow matching allows iterative denoising and true generative sampling.
+    </p>
+
+    <hr>
+
+    <h3>2.1 Adding Time Conditioning to UNet</h3>
+    <p>
+        I modified the UNet to accept a scalar timestep <em>t</em>, normalized to [0,1].
+        This value was embedded via fully-connected layers and modulated intermediate UNet activations as described in the spec.
+        Below is a schematic illustration of the conditioning mechanism.
+    </p>
+
+    <img src="./media/b/2_1.png" alt="Time-conditioned UNet diagram" height="350">
+
+    <hr>
+
+    <h3>2.2 Training the Time-Conditioned UNet</h3>
+    <p>
+        I trained the time-conditioned model with batch size 64 for several epochs.
+        The exponential learning rate scheduler (γ=0.95) improved stability.
+        The model learned to predict the flow between clean and noisy distributions effectively.
+    </p>
+
+    <img src="./media/b/2_2.png" alt="Training loss curve time-conditioned UNet" height="300">
+
+    <hr>
+
+    <h3>2.3 Sampling from the Time-Conditioned UNet</h3>
+    <p>
+        I used the trained UNet to iteratively denoise pure noise and generate MNIST-like samples.
+        The quality improved steadily over epochs, producing recognizable digits after 10 epochs.
+    </p>
+
+    <p>Samples after 1 epoch:</p>
+    <img src="./media/b/2_3_1.png" alt="Sampling epoch 1 time-conditioned" height="200">
+    <p>Samples after 5 epochs:</p>
+    <img src="./media/b/2_3_2.png" alt="Sampling epoch 5 time-conditioned" height="200">
+    <p>Samples after 10 epochs:</p>
+    <img src="./media/b/2_3_3.png" alt="Sampling epoch 10 time-conditioned" height="200">
+
+    <hr>
+
+    <h3>2.4 Adding Class Conditioning to UNet</h3>
+    <p>
+        To improve sample quality and control, I added class conditioning via one-hot vectors.
+        Each digit class was embedded through two additional fully-connected blocks and combined with the time conditioning signal.
+        Dropout (10%) was used for classifier-free guidance.
+    </p>
+    <hr>
+
+    <h3>2.5 Training the Class-Conditioned UNet</h3>
+    <p>
+        Training followed the same setup as the time-conditioned model but now included class-conditioning vectors.
+        The model converged faster and achieved better perceptual quality.
+    </p>
+
+    <img src="./media/b/2_5.png" alt="Training loss curve class-conditioned UNet" height="300">
+
+    <hr>
+
+    <h3>2.6 Sampling from the Class-Conditioned UNet</h3>
+    <p>
+        The class-conditioned model produced the best results. After 10 epochs, generated digits were clean and diverse.
+        I generated 4 samples per class (digits 0–9) for comparison.
+    </p>
+
+    <h4>Epoch 1 Samples</h4>
+    <img src="./media/b/2_6_3.png" alt="Class-conditioned samples epoch 1" height="200">
+    <h4>Epoch 5 Samples</h4>
+    <img src="./media/b/2_6_4.png" alt="Class-conditioned samples epoch 5" height="200">
+    <h4>Epoch 10 Samples</h4>
+    <img src="./media/b/2_6_1.png" alt="Class-conditioned samples epoch 10" height="200">
+
+    <h4>Removing the Learning Rate Scheduler</h4>
+    <p>
+        To simplify training, I removed the exponential scheduler and compensated by slightly reducing the base learning rate and using gradient clipping to prevent instability.
+        The final model maintained similar performance while eliminating unnecessary complexity.
+    </p>
+
+    <img src="./media/b/2_6_2.png" alt="Without scheduler" height="300">
+
+    <hr>
+
+    <h3>Reflection</h3>
+    <p>
+        This part of the project solidified my understanding of diffusion-like training through flow matching.
+        Implementing UNets with time and class conditioning demonstrated how conditioning guides generative behavior and stabilizes learning.
+        I also observed firsthand how architectural and training design choices, such as skip connections, conditioning, and scheduler tuning, influence convergence and quality.
+    </p>
+
+    <br><br><br>
+</body>
+</html>
